@@ -36,7 +36,8 @@ for (const [path, $] of pages) {
     );
     if (
       topic &&
-      $(element).closest('article, nav').length &&
+      $(element).closest('article, .reading-layout nav, .page-outline')
+        .length &&
       $(element).is('a')
     ) {
       assert(

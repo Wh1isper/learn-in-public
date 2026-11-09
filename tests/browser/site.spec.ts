@@ -1,5 +1,30 @@
 import { test, expect } from '@playwright/test';
 
+test('首页在手机、平板和桌面保持可读布局', async ({ page }) => {
+  for (const width of [360, 768, 1440]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto('/');
+    await expect(
+      page.getByRole('navigation', { name: '网站导航' }),
+    ).toBeVisible();
+    await expect(page.locator('.topic-cover').first()).toBeVisible();
+    const cover = await page.locator('.topic-cover').first().boundingBox();
+    const content = await page.locator('.card-content').first().boundingBox();
+    expect(cover).not.toBeNull();
+    expect(content).not.toBeNull();
+    if (width <= 720) {
+      expect(content!.y).toBeGreaterThanOrEqual(cover!.y + cover!.height);
+    } else {
+      expect(content!.x).toBeGreaterThanOrEqual(cover!.x + cover!.width);
+    }
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= window.innerWidth,
+      ),
+    ).toBe(true);
+  }
+});
+
 test('首页进入主题，主题导航保持独立', async ({ page }) => {
   await page.goto('/');
   await expect(page.getByRole('heading', { level: 1 })).toContainText(

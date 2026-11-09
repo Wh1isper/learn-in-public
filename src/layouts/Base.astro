@@ -13,7 +13,7 @@ const { title, description } = Astro.props;
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
-    <meta name="theme-color" content="#f6f4ee" />
+    <meta name="theme-color" content="#fbfbfd" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     {Astro.url.pathname !== '/404/' && (
       <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
@@ -26,12 +26,26 @@ const { title, description } = Astro.props;
     </a>
     <header class="site-header">
       <a class="wordmark" href="/" aria-label="公开学习，返回主题目录">
-        <span class="brand-mark" aria-hidden="true">
-          知
-        </span>
+        <svg
+          class="brand-mark"
+          viewBox="0 0 24 24"
+          fill="none"
+          aria-hidden="true"
+        >
+          <path
+            d="M3 5.5C6 4.5 9 5.5 12 8C15 5.5 18 4.5 21 5.5V19C18 18 15 19 12 21C9 19 6 18 3 19V5.5Z"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linejoin="round"
+          />
+          <path d="M12 8V21M7 2V10" stroke="currentColor" stroke-width="1.5" />
+        </svg>
         公开学习
       </a>
-      <span class="header-note">循着问题，慢慢理解。</span>
+      <nav class="header-nav" aria-label="网站导航">
+        <a href="/">主题目录</a>
+        <a href="https://github.com/Wh1isper/learn-in-public">原始笔记</a>
+      </nav>
     </header>
     <slot />
     <footer class="site-footer">

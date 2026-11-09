@@ -1,1 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="#225c4b"/><text x="32" y="44" text-anchor="middle" font-size="40" fill="#fff" font-family="serif">知</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <rect width="32" height="32" rx="6" fill="#fbfbfd" />
+  <g stroke="#4f46e5" stroke-width="1.8" stroke-linejoin="round">
+    <path
+      d="M5 8C9 7 12 8 16 11C20 8 23 7 27 8V25C23 24 20 25 16 28C12 25 9 24 5 25V8Z"
+    />
+    <path d="M16 11V28M10 3V14" />
+  </g>
+</svg>

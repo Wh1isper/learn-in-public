@@ -1,0 +1,77 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import { organizeTopics } from '../lib/topics.mjs';
+const topics = organizeTopics(await getCollection('pages'));
+---
+
+<Base
+  title="循着好奇，理解世界"
+  description="从知识的由来出发，重走探索的道路。独立的主题、持续生长的笔记与思维导图。"
+>
+  <main id="main" class="home">
+    <section class="hero">
+      <p class="eyebrow">一个持续生长的学习现场</p>
+      <h1>
+        先有问题，
+        <br />
+        然后才有<span>知识。</span>
+      </h1>
+      <p class="hero-intro">
+        从一个好奇的念头出发，走过尝试、困惑和恍然大悟。
+        <br class="desktop-break" />
+        不急着记住答案，先看清它为什么值得被发现。
+      </p>
+      <div class="hero-principles">
+        <span>追溯由来</span>
+        <span>允许发散</span>
+        <span>留下理解</span>
+      </div>
+      <div class="orbit" aria-hidden="true">
+        <div class="orbit-ring"></div>
+        <div class="orbit-ring inner"></div>
+        <span class="orbit-center">为什么</span>
+        <span class="orbit-label one">观察</span>
+        <span class="orbit-label two">尝试</span>
+        <span class="orbit-label three">理解</span>
+      </div>
+    </section>
+    <section class="topics-section" aria-labelledby="topics-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">各自独立，随时开始</p>
+          <h2 id="topics-title">探索中的主题</h2>
+        </div>
+        <span class="topic-count">{topics.length} 个起点</span>
+      </div>
+      <div class="topic-grid">
+        {topics.map((topic, index) => (
+          <a class="topic-card" href={topic.href}>
+            <span class="card-number">
+              {String(index + 1).padStart(2, '0')}
+            </span>
+            <h3>{topic.title}</h3>
+            <p>{topic.description}</p>
+            <div class="card-footer">
+              <span>{topic.pages.length} 篇记录</span>
+              <span>
+                进入探索 <span aria-hidden="true">↗</span>
+              </span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </section>
+    <section class="home-note">
+      <span class="note-mark" aria-hidden="true">
+        “
+      </span>
+      <p>
+        学习不是把世界压缩成结论，
+        <br />
+        而是逐渐看见，结论背后那些美妙的缘由。
+      </p>
+      <span class="eyebrow">这里的学习方式</span>
+    </section>
+  </main>
+</Base>

@@ -1,0 +1,99 @@
+---
+import Base from './Base.astro';
+interface Props {
+  title: string;
+  description: string;
+  topic: {
+    title: string;
+    href: string;
+    pages: { href: string; data: { title: string } }[];
+  };
+  headings?: { depth: number; slug: string; text: string }[];
+}
+const { title, description, topic, headings = [] } = Astro.props;
+---
+
+<Base title={title} description={description}>
+  <div class="reading-layout">
+    <aside class="topic-sidebar">
+      <a class="back-link" href="/">
+        ← 主题目录
+      </a>
+      <p class="eyebrow">当前主题</p>
+      <a class="topic-name" href={topic.href}>
+        {topic.title}
+      </a>
+      <nav aria-label="主题内导航">
+        {topic.pages.map((page) => (
+          <a
+            href={page.href}
+            aria-current={Astro.url.pathname === page.href ? 'page' : undefined}
+          >
+            {page.data.title}
+          </a>
+        ))}
+      </nav>
+      <p class="sidebar-note">一条探索路径，一个独立空间。</p>
+    </aside>
+    <main id="main" class="reading-main">
+      <header class="article-header">
+        <p class="eyebrow">{topic.title}</p>
+        <h1>{title}</h1>
+        <p class="lede">{description}</p>
+      </header>
+      <article class="prose">
+        <slot />
+      </article>
+    </main>
+    {headings.some((heading) => heading.depth === 2) && (
+      <aside class="page-outline" aria-label="本页目录">
+        <p class="eyebrow">本页线索</p>
+        {headings
+          .filter((heading) => heading.depth === 2)
+          .map((heading) => (
+            <a href={`#${heading.slug}`}>{heading.text}</a>
+          ))}
+      </aside>
+    )}
+  </div>
+</Base>
+<script>
+  const blocks = document.querySelectorAll<HTMLElement>(
+    'pre code.language-mermaid',
+  );
+  if (blocks.length) {
+    const { default: mermaid } = await import('mermaid');
+    mermaid.initialize({
+      startOnLoad: false,
+      securityLevel: 'strict',
+      theme: 'neutral',
+      fontFamily: 'system-ui, sans-serif',
+    });
+    for (const [index, block] of [...blocks].entries()) {
+      const pre = block.parentElement!;
+      const source = block.textContent ?? '';
+      try {
+        const { svg } = await mermaid.render(`mindmap-${index}`, source);
+        const figure = document.createElement('figure');
+        figure.className = 'mindmap';
+        const viewport = document.createElement('div');
+        viewport.className = 'mindmap-viewport';
+        viewport.setAttribute('role', 'img');
+        viewport.setAttribute('aria-label', '思维导图；下方可查看文字源稿');
+        viewport.innerHTML = svg;
+        const details = document.createElement('details');
+        const summary = document.createElement('summary');
+        summary.textContent = '查看导图文字源稿';
+        details.append(summary);
+        pre.replaceWith(figure);
+        details.append(pre);
+        figure.append(viewport, details);
+      } catch (error) {
+        console.error('导图绘制失败，已保留文字源稿。', error);
+        const message = document.createElement('p');
+        message.textContent = '导图暂时无法绘制，以下是完整文字源稿。';
+        pre.before(message);
+      }
+    }
+  }
+</script>

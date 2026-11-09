@@ -1,0 +1,33 @@
+{
+  "name": "learn-in-public",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "scripts": {
+    "dev": "astro dev --host 127.0.0.1",
+    "check": "astro check",
+    "test": "node --test tests/*.test.mjs",
+    "build": "astro build && node scripts/verify-build.mjs",
+    "preview": "astro preview --host 127.0.0.1",
+    "verify": "npm run check && npm test && npm run build",
+    "deploy": "wrangler deploy",
+    "worker:dev": "wrangler dev"
+  },
+  "dependencies": {
+    "astro": "^7.4.7",
+    "mermaid": "^12.3.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "@playwright/test": "^1.65.0",
+    "@types/node": "^24.19.2",
+    "cheerio": "^1.2.0",
+    "prettier": "^3.9.10",
+    "prettier-plugin-astro": "^1.1.2",
+    "typescript": "^6.0.3",
+    "wrangler": "^4.158.0"
+  }
+}

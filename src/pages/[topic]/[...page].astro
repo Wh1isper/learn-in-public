@@ -1,0 +1,52 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import Topic from '../../layouts/Topic.astro';
+import { describeEntry, organizeTopics } from '../../lib/topics.mjs';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('pages');
+  const topics = organizeTopics(entries);
+  return entries.map((entry) => {
+    const route = describeEntry(entry.id);
+    return {
+      params: { topic: route.topic, page: route.page },
+      props: {
+        entry,
+        topic: topics.find((topic) => topic.id === route.topic)!,
+      },
+    };
+  });
+}
+interface Props {
+  entry: CollectionEntry<'pages'>;
+  topic: {
+    id: string;
+    title: string;
+    href: string;
+    pages: { href: string; data: { title: string } }[];
+  };
+}
+const { entry, topic } = Astro.props;
+const { Content, headings } = await render(entry);
+const demos = import.meta.glob<{
+  default: import('astro/runtime/server/index.js').AstroComponentFactory;
+}>('../../../topics/*/demos/*.astro');
+const demoPath = `../../../topics/${topic.id}/demos/${entry.data.demo}.astro`;
+if (entry.data.demo && !demos[demoPath])
+  throw new Error(`演示不存在：${demoPath}`);
+const Demo = entry.data.demo ? (await demos[demoPath]()).default : undefined;
+---
+
+<Topic
+  title={entry.data.title}
+  description={entry.data.description}
+  topic={topic}
+  headings={headings}
+>
+  <Content />
+  {Demo && (
+    <section class="demo-panel" aria-label="交互演示">
+      <Demo />
+    </section>
+  )}
+</Topic>

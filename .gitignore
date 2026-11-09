@@ -17,7 +17,5 @@ dist/
 .astro/
 .wrangler/
 
-# 日志与测试产物
+# 日志
 *.log
-playwright-report/
-test-results/

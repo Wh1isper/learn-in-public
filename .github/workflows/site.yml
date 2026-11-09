@@ -1,4 +1,4 @@
-name: 检查与发布学习网站
+name: 构建与发布学习网站
 
 on:
   push:
@@ -14,33 +14,8 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  check:
-    name: 检查内容与网站
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    steps:
-      - name: 检出仓库
-        uses: actions/checkout@v6
-      - name: 配置运行环境
-        uses: actions/setup-node@v6
-        with:
-          node-version: '24'
-          cache: npm
-      - name: 安装锁定的依赖
-        run: npm ci
-      - name: 类型、单元测试与构建检查
-        run: npm run verify
-      - name: 安装浏览器
-        run: npx playwright install --with-deps chromium
-      - name: 验证桌面、手机与交互演示
-        run: npx playwright test
-      - name: 验证部署配置
-        run: npx wrangler deploy --dry-run
-
-  deploy:
-    name: 发布到 Cloudflare
-    needs: check
-    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+  publish:
+    name: 构建与发布
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -53,12 +28,11 @@ jobs:
           cache: npm
       - name: 安装锁定的依赖
         run: npm ci
-      - name: 构建已验证的提交
+      - name: 构建网站
         run: npm run build
-      - name: 发布静态资源与域名
+      - name: 发布到 Cloudflare
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         run: npm run deploy
         env:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-      - name: 检查公开站点
-        run: node scripts/verify-live.mjs

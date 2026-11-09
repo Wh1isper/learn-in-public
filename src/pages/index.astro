@@ -5,86 +5,29 @@ import { organizeTopics } from '../lib/topics.mjs';
 const topics = organizeTopics(await getCollection('pages'));
 ---
 
-<Base
-  title="循着好奇，理解世界"
-  description="从知识的由来出发，重走探索的道路。独立的主题、持续生长的笔记与思维导图。"
->
+<Base title="主题目录" description="公开学习的主题与笔记。">
   <main id="main" class="home">
     <header class="hero">
-      <h1>
-        先有问题。
-        <span>
-          循着好奇，
-          <br class="mobile-break" />
-          慢慢理解世界。
-        </span>
-      </h1>
-      <p class="hero-intro">
-        从知识的由来出发，记录探索的路径、原理的美，以及还没想明白的事。
-      </p>
+      <h1>主题目录</h1>
+      <span class="topic-count">{topics.length} 个主题</span>
     </header>
-    <section class="topics-section" aria-labelledby="topics-title">
-      <div class="section-heading">
-        <h2 id="topics-title">探索中的主题</h2>
-        <span class="topic-count">{topics.length} 个独立的起点</span>
-      </div>
+    {topics.length ? (
       <div class="topic-grid">
-        {topics.map((topic, index) => (
+        {topics.map((topic) => (
           <a class="topic-card" href={topic.href}>
-            <div class="topic-cover" aria-hidden="true">
-              <span class="cover-number">
-                {String(index + 1).padStart(2, '0')}
+            <h2>{topic.title}</h2>
+            <p class="card-description">{topic.description}</p>
+            <div class="card-footer">
+              <span>{topic.pages.length} 篇记录</span>
+              <span>
+                查看主题 <span aria-hidden="true">↗</span>
               </span>
-              <svg viewBox="0 0 640 360" fill="none">
-                <path class="cover-guide" d="M72 180H568M320 44V316" />
-                <path
-                  class="cover-path"
-                  d="M142 180H258L320 108H474M258 180L320 252H474"
-                />
-                <path
-                  class="cover-path"
-                  d="M320 108V252"
-                  stroke-dasharray="3 7"
-                />
-                <circle class="cover-node" cx="142" cy="180" r="30" />
-                <path
-                  class="cover-node"
-                  d="M296 84H344V132H296ZM296 228H344V276H296Z"
-                />
-                <circle class="cover-node" cx="474" cy="108" r="20" />
-                <circle class="cover-node" cx="474" cy="252" r="20" />
-                <path class="cover-accent" d="M252 174H264V186H252Z" />
-                <path
-                  class="cover-tick"
-                  d="M102 85V65H122M518 65H538V85M102 275V295H122M518 295H538V275"
-                />
-              </svg>
-              <div class="cover-caption">
-                <span>问题</span>
-                <span>探索</span>
-                <span>理解</span>
-              </div>
-            </div>
-            <div class="card-content">
-              <p class="eyebrow">主题 {String(index + 1).padStart(2, '0')}</p>
-              <h3>{topic.title}</h3>
-              <p class="card-description">{topic.description}</p>
-              <div class="card-footer">
-                <span>{topic.pages.length} 篇记录</span>
-                <span>
-                  进入探索 <span aria-hidden="true">↗</span>
-                </span>
-              </div>
             </div>
           </a>
         ))}
       </div>
-    </section>
-    <section class="home-note" aria-label="学习方式">
-      <p>
-        追溯由来。允许发散。<span>让理解留下痕迹。</span>
-      </p>
-      <span class="eyebrow">笔记 · 思维导图 · 交互演示</span>
-    </section>
+    ) : (
+      <p class="empty-state">暂无主题。</p>
+    )}
   </main>
 </Base>
